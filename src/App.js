@@ -7,7 +7,7 @@ import Chart from './Chart';
 import CustomDatePicker from './DatePicker';
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(mnull);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
 
   const handleDateChange = (date) => {
