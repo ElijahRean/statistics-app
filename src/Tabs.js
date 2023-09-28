@@ -2,7 +2,7 @@ import React from 'react';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
-function CustomTabe({ selectedTab, onSelectTab}) {
+function CustomTabs({ selectedTab, onSelectTab}) {
   return (
     <Tabs onSelect={onSelectTab} selectedIndex={selectedTab}>
       <TabList>
@@ -20,4 +20,4 @@ function CustomTabe({ selectedTab, onSelectTab}) {
   );
 }
 
-export default CustomTabe;
+export default CustomTabs;

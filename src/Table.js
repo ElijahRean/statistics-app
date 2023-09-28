@@ -1,7 +1,7 @@
 import React from 'react';
-import { useTable, useFilters, useSortBy, usePaginition} from 'react-table';
+import { useTable, useFilters, useSortBy, usePagination} from 'react-table';
 
-function Table({ selectedDate }) {
+function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nextPage, pageCount }) {
   const columns = React. useMemo(
     () => [
       {
@@ -37,7 +37,7 @@ function Table({ selectedDate }) {
     },
     useFilters,
     useSortBy,
-    usePaginition
+    usePagination
   );
 
   return (
@@ -104,7 +104,7 @@ function Table({ selectedDate }) {
       <button onClick={() => nextPage()} disabled={!canNextPage}>
         {'>'}
       </button>
-      <button onClick={() => gotoPage(oageCount - 1)} disabled={!canNextPage}>
+      <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
         {'>>'}
       </button>
     </div>

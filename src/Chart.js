@@ -3,8 +3,8 @@ import { Line } from 'react-chartjs-2';
 
 function Chart({ data }) {
   const chartData = {
-    labels: data.map(item.data),
-    dataset: [
+    labels: data.map(item => item.data),
+    datasets: [
       {
         label: 'Cases',
         data: data.map(item=>item.cases),
@@ -28,7 +28,7 @@ function Chart({ data }) {
   };
   return (
     <div className="chart">
-      <Line data={chartData} option={chartOption} />
+      <Line data={chartData} options={chartOption} />
     </div>
   );
 }
