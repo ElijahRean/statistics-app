@@ -15,7 +15,12 @@ function App() {
   });
   return (
     <div className="App">
-
+      <h1>COVID-19 Data</h1>
+      <u1>
+        {data.map((record, index) => (
+          <li key={index}>{record.countriesAndTerritories}</li>
+        ))}
+      </u1>
     </div>
   );
 }

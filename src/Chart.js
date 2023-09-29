@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 
 function Chart({ data }) {
   const chartData = {
-    labels: data.map(item => item.data),
+    labels: data.map(item => item.dataRep),
     datasets: [
       {
         label: 'Cases',
@@ -22,7 +22,7 @@ function Chart({ data }) {
         },
       },
       y: {
-        beginatZero: true,
+        beginAtZero: true,
       },
     },
   };

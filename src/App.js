@@ -19,11 +19,10 @@ function App() {
   };
 
   useEffect(() => {
-    
     fetch('https://opendata.ecdc.europa.eu/covid19/casedistribution/json/')
       .then((response) => response.json())
       .then((data) => {
-        setData(data.records); 
+        setData(data.records);
       })
       .catch((error) => {
         console.error('Error in receiving data: ', error);
@@ -34,10 +33,11 @@ function App() {
     <div className="App">
       <CustomDatePicker selectedDate={selectedDate} onChangeData={handleDateChange} />
       <CustomTabs selectedTab={selectedTab} onSelectTab={handleTabChange} />
-      {selectedTab === 0 ? <Table selectedDate={selectedDate} data={data} /> : <Chart data={data} />}
+      <div className="data-display">
+        {selectedTab === 0 ? <Table selectedDate={selectedDate} data={data} /> : <Chart data={data} />}
+      </div>
     </div>
   );
-  
 }
 
 export default App;
