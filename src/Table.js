@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 
-function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nextPage, pageCount }) {
+function Table({ data, dateRange, selectedCountry, onCountryChange }) {
+  const [countryFilter, setCountryFilter] = useState(selectedCountry);
+
   const columns = React.useMemo(
     () => [
       {
         Header: 'Country',
         accessor: 'countriesAndTerritories',
+        Filter: ({ column }) => {
+          const { filterValue, setFilter } = column;
+          return (
+            <input
+              value={countryFilter || ''}
+              onChange={(e) => {
+                setCountryFilter(e.target.value || undefined);
+                setFilter(e.target.value || undefined);
+              }}
+              placeholder="Filter by country"
+            />
+          );
+        },
       },
       {
         Header: 'Cases',
@@ -16,10 +32,27 @@ function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nex
         Header: 'Deaths',
         accessor: 'deaths',
       },
+      {
+        Header: 'All Cases',
+        // accessor: 'deaths',
+      },
+      {
+        Header: 'All Deaths',
+        // accessor: 'deaths',
+      },
+      {
+        Header: 'Cases per 1000',
+        // accessor: 'deaths',
+      },
+      {
+        Header: 'Deaths per 1000',
+        // accessor: 'deaths',
+      },
     ],
     []
   );
 
+  // Initialize the table instance with data and columns
   const {
     getTableProps,
     getTableBodyProps,
@@ -28,11 +61,12 @@ function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nex
     page,
     state: { pageIndex, pageSize },
     setPageSize,
-    rows,
+    gotoPage,
+    
   } = useTable(
     {
       columns,
-      data,
+      data: data, // Your data goes here
       initialState: { pageSize: 10 },
     },
     useFilters,
@@ -40,8 +74,40 @@ function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nex
     usePagination
   );
 
+ 
+  useEffect(() => {
+    // Ensure that the country filter is applied only once when the selectedCountry prop changes
+    const filteredData = data.filter((item) => {
+      const isDateInRange =
+        item.date >= dateRange.startDate && item.date <= dateRange.endDate;
+
+      const isCountryMatched =
+        countryFilter === 'All' ||
+        item.countriesAndTerritories === countryFilter;
+
+      return isDateInRange && isCountryMatched;
+    });
+
+
+    // Update the data with the filtered results
+    // This assumes you have a setter for data, e.g., setData
+    // setData(filteredData);
+
+    // Note: Uncomment the above line once you have a way to set the filtered data in your parent component
+
+    gotoPage(0);
+  }, [data, dateRange, countryFilter, gotoPage]);
+
   return (
     <div className="table-container">
+       <div className="filter-input">
+        <label>Filter by Country: </label>
+        <input
+          value={countryFilter}
+          onChange={(e) => setCountryFilter(e.target.value)}
+          placeholder="All"
+        />
+      </div>
       <table {...getTableProps()} className="table">
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -49,20 +115,9 @@ function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nex
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
-                  {column.canFilter && (
-            <input
-              type="text"
-              value={column.filterValue || ''}
-              onChange={(e) => {
-                column.setFilter(e.target.value || undefined);
-              }}
-              placeholder={`Filter ${column.render('Header')}`}
-            />
-                  )}
                   <span>
-                    {column.isSorted ? (column.isSortedDesc ?  ' 🔽' : ' 🔼') : ''}
-                  </span>   
-                  
+                    {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                  </span>
                 </th>
               ))}
             </tr>
@@ -101,24 +156,19 @@ function Table({ data, gotoPage, canPreviousPage, previousPage, canNextPage, nex
         <span>
           Page{' '}
           <strong>
-            {pageIndex + 1} of {Math.ceil(rows.length / pageSize)}
+            {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
           </strong>{' '}
         </span>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>
       </div>
     </div>
   );
 }
+
+Table.propTypes = {
+  data: PropTypes.array.isRequired,
+  dateRange: PropTypes.object.isRequired,
+  selectedCountry: PropTypes.string.isRequired,
+  onCountryChange: PropTypes.func.isRequired,
+};
 
 export default Table;
